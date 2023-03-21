@@ -17,7 +17,7 @@ void main(void);
 void lcd_putstring(char * instring);
 void display_on_LCD(uint8_t num);
 void init_LEDs(void);
-void display_on_LEDs(uint8_t count);
+void display_on_LEDs(uint8_t number);
 void delay(unsigned int microseconds);
 
 
@@ -25,12 +25,13 @@ void delay(unsigned int microseconds);
 
 void main(void)
 {
-	//init_LEDs();
+	init_LEDs();
     init_LCD();
 
     while(1)
     {
-    	display_on_LCD();
+    	display_on_LCD(5);
+    	display_on_LEDs(12);
     }
 }
 
@@ -46,6 +47,25 @@ void display_on_LCD(uint8_t num)
               lcd_putstring(str);
               delay(10000);
 
+}
+
+void init_LEDs(void)
+{
+	RCC -> AHBENR |= RCC_AHBENR_GPIOBEN;
+	GPIOB -> MODER |= GPIO_MODER_MODER0_0;
+	GPIOB -> MODER |= GPIO_MODER_MODER1_0;
+	GPIOB -> MODER |= GPIO_MODER_MODER2_0;
+	GPIOB -> MODER |= GPIO_MODER_MODER3_0;
+	GPIOB -> MODER |= GPIO_MODER_MODER4_0;
+	GPIOB -> MODER |= GPIO_MODER_MODER5_0;
+	GPIOB -> MODER |= GPIO_MODER_MODER6_0;
+	GPIOB -> MODER |= GPIO_MODER_MODER7_0;
+
+}
+
+void display_on_LEDs(uint8_t number){
+
+	GPIOB->ODR = number;
 }
 
 
