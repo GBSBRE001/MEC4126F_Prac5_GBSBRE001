@@ -51,6 +51,7 @@ void display_on_LCD(uint8_t num)
 
 void init_LEDs(void)
 {
+
 	RCC -> AHBENR |= RCC_AHBENR_GPIOBEN;
 	GPIOB -> MODER |= GPIO_MODER_MODER0_0;
 	GPIOB -> MODER |= GPIO_MODER_MODER1_0;
@@ -69,6 +70,19 @@ void display_on_LEDs(uint8_t number){
 }
 
 
+void init_switches(void)
+{
+    RCC -> AHBENR |= RCC_AHBENR_GPIOAEN;
+
+    GPIOA -> MODER &= ~GPIO_MODER_MODER1;
+    GPIOA -> MODER &= ~GPIO_MODER_MODER2;
+    GPIOA -> MODER &= ~GPIO_MODER_MODER3;
+
+    GPIOA -> PUPDR |= GPIO_PUPDR_PUPDR1_0;
+    GPIOA -> PUPDR |= GPIO_PUPDR_PUPDR2_0;
+    GPIOA -> PUPDR |= GPIO_PUPDR_PUPDR3_0;
+
+}
 
 
 
