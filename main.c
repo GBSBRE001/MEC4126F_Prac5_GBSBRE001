@@ -15,40 +15,68 @@
 
 void main(void);
 void lcd_putstring(char * instring);
-void display_on_LCD(uint8_t num);
+void display_on_LCD(uint8_t count);
 void init_LEDs(void);
-void display_on_LEDs(uint8_t number);
+void display_on_LEDs(uint8_t count);
 void delay(unsigned int microseconds);
+void init_switches(void);
 
 
 // MAIN FUNCTION -------------------------------------------------------------|
+
+uint8_t count = 0;
 
 void main(void)
 {
 	init_LEDs();
     init_LCD();
+    init_switches();
+
 
     while(1)
     {
-    	display_on_LCD(5);
-    	display_on_LEDs(12);
+    	display_on_LEDs(count);
+    	display_on_LCD(count);
+
+        if ((( GPIOA -> IDR & GPIO_IDR_1) == 0)){
+            if( count < 255){
+                count++;
+            }
+            display_on_LEDs(count);
+            display_on_LCD(count);
+            delay(50000);
+        }
+        else if((( GPIOA -> IDR & GPIO_IDR_2) == 0)){
+            if(count <= 0){
+                count = 0;
+            }
+            else{
+                count--;
+            }
+            display_on_LCD(count);
+            display_on_LEDs(count);
+            delay(50000);
+        }
     }
+
 }
+
+
 
 
 // OTHER FUNCTIONS -----------------------------------------------------------|
 
 
-void display_on_LCD(uint8_t num)
+void display_on_LCD(uint8_t count)
 {
               lcd_command(CLEAR);
-              char str[2];
-              sprintf(str,"%d", num);
+              char str[4];
+              sprintf(str,"%d", count);
               lcd_putstring(str);
               delay(10000);
 
 }
-
+/* -----------------------------------------------------------*/
 void init_LEDs(void)
 {
 
@@ -63,12 +91,14 @@ void init_LEDs(void)
 	GPIOB -> MODER |= GPIO_MODER_MODER7_0;
 
 }
+/* -----------------------------------------------------------*/
 
-void display_on_LEDs(uint8_t number){
+void display_on_LEDs(uint8_t count){
 
-	GPIOB->ODR = number;
+	GPIOB->ODR = count;
 }
 
+/* -----------------------------------------------------------*/
 
 void init_switches(void)
 {
@@ -76,17 +106,9 @@ void init_switches(void)
 
     GPIOA -> MODER &= ~GPIO_MODER_MODER1;
     GPIOA -> MODER &= ~GPIO_MODER_MODER2;
-    GPIOA -> MODER &= ~GPIO_MODER_MODER3;
 
     GPIOA -> PUPDR |= GPIO_PUPDR_PUPDR1_0;
     GPIOA -> PUPDR |= GPIO_PUPDR_PUPDR2_0;
-    GPIOA -> PUPDR |= GPIO_PUPDR_PUPDR3_0;
 
 }
-
-
-
-
-
-
-
+/* -----------------------------------------------------------*/
